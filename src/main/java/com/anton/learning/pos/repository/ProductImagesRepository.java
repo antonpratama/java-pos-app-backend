@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface ProductImagesRepository extends JpaRepository<ProductImages, String> {
   List<ProductImages> findByProduct_idAndIsActiveTrue(String productId);
+  List<ProductImages> findByProduct_idAndIsActiveTrueAndImageIndex(String productId, int imageIndex);
   Long countByProduct_IdAndIsActiveTrue(String productId);
 }

@@ -139,6 +139,16 @@ public class ProductImagesService {
             .toList();
   }
 
+  @Transactional(readOnly = true)
+  public List<ProductImagesResponse> getMainImageByProductId(String productId){
+    productRepository.findById(productId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product Id Not Found"));
+
+    return imagesRepository.findByProduct_idAndIsActiveTrueAndImageIndex(productId,1).stream()
+            .map(this::toProductImagesResponse)
+            .toList();
+  }
+
   public void deleteImage(String imageId){
     ProductImages image = imagesRepository.findById(imageId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Image not found"));

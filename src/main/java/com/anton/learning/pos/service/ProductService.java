@@ -32,6 +32,9 @@ public class ProductService {
   @Autowired
   private ProductCategoryRepository productCategoryRepository;
 
+  @Autowired
+  private ProductImagesService productImagesService;
+
   private ProductCategoryResponse toProductCategoryResponse(ProductCategory category){
 
     return ProductCategoryResponse.builder()
@@ -52,6 +55,20 @@ public class ProductService {
             .price(product.getPrice())
             .stock(product.getStock())
             .category(toProductCategoryResponse(product.getCategory()))
+            .build();
+  }
+
+  private ProductResponse toSearchResponse(Product product){
+    return ProductResponse.builder()
+            .id(product.getId())
+            .name(product.getName())
+            .sku(product.getSku())
+            .isActive(product.getIsActive())
+            .description(product.getDescription())
+            .price(product.getPrice())
+            .stock(product.getStock())
+            .category(toProductCategoryResponse(product.getCategory()))
+            .images(productImagesService.getMainImageByProductId(product.getId()))
             .build();
   }
 
@@ -96,7 +113,7 @@ public class ProductService {
     Pageable pageable = PageRequest.of(page, size, sort);
     Page<Product> listResponse = productRepository.findByNameContainingIgnoreCaseAndIsActiveTrue(name, pageable);
 
-    return listResponse.map(this::toProductResponse);
+    return listResponse.map(this::toSearchResponse);
   }
 
   public List<ProductResponse> getAllActiveProduct(){
